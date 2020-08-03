@@ -89,10 +89,9 @@ class VPNmgmt(object):
         """
         if input_string.startswith('SUCCESS'):
             return True
-        elif input_string.startswith('INFO'):
+        if input_string.startswith('INFO'):
             return True
-        else:
-            return False
+        return False
 
     def status(self):
         """
