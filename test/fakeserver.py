@@ -10,18 +10,11 @@
 """
    script testing script
 """
-# This test file calls protected methods on the script classes
-# file, so, we tell pylint that we're cool with it globally:
-# pylint: disable=protected-access
-
 import os
-import sys
 import socket
 import time
 import threading
 import textwrap
-
-sys.dont_write_bytecode = True
 
 
 class FakeServer(object):

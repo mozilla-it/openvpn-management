@@ -10,17 +10,12 @@
 """
    script testing script
 """
-# This test file calls protected methods on the script classes
-# file, so, we tell pylint that we're cool with it globally:
-# pylint: disable=protected-access
-
 import unittest
-import sys
+import test.context  # pylint: disable=unused-import
 import socket
-from openvpn_management import VPNmgmt
 from test.fakeserver import FakeServer
-
-sys.dont_write_bytecode = True
+import six
+from openvpn_management import VPNmgmt
 
 
 UNIX_SOCKET_FILENAME = '/tmp/good-test-path'
@@ -44,7 +39,7 @@ class TestVPNmgmt(unittest.TestCase):
         """ Verify that the self object was initialized """
         self.assertIsInstance(self.library, VPNmgmt,
                               'VPN client library is not a proper object')
-        self.assertIsInstance(self.library.socket_path, basestring,
+        self.assertIsInstance(self.library.socket_path, six.string_types,
                               'VPN client socket_path is not a string')
         self.assertIsInstance(self.library.sock, socket.socket,
                               'VPN client sock is not a socket')
