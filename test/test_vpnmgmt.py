@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -34,6 +33,7 @@ class TestVPNmgmt(unittest.TestCase):
         """ Cleaning test rig """
         if self.server_thread is not None:
             self.server_thread.join()
+        self.library.disconnect()
 
     def test_00_init(self):
         """ Verify that the self object was initialized """
@@ -52,6 +52,7 @@ class TestVPNmgmt(unittest.TestCase):
         testobj = VPNmgmt('/tmp/badpath')
         with self.assertRaises(socket.error):
             testobj.connect()
+        testobj.sock.close()
 
     def test_02_goodsetup(self):
         """
@@ -147,15 +148,16 @@ class TestVPNmgmt(unittest.TestCase):
             target=self.server.server_status_and_good_kill)
         self.library.connect()
         users = self.library.getusers()
-        killtest = self.library.kill(users.keys()[0])
+        some_user = list(users.keys())[0]
+        killtest = self.library.kill(some_user)
         self.assertIsInstance(killtest, tuple,
                               'kill must return a list')
         self.assertEqual(len(killtest), 2,
                          'kill must return a 2-element list')
         self.assertIsInstance(killtest[0], bool,
                               'kill return element 0 must be a bool')
-        self.assertIsInstance(killtest[1], str,
-                              'kill return element 1 must be a str')
+        self.assertIsInstance(killtest[1], six.string_types,
+                              'kill return element 1 must be a string')
         self.assertTrue(killtest[0],
                         'a good kill returns True')
 
@@ -167,14 +169,15 @@ class TestVPNmgmt(unittest.TestCase):
             target=self.server.server_status_and_bad_kill)
         self.library.connect()
         users = self.library.getusers()
-        killtest = self.library.kill(users.keys()[0])
+        some_user = list(users.keys())[0]
+        killtest = self.library.kill(some_user)
         self.assertIsInstance(killtest, tuple,
                               'kill must return a list')
         self.assertEqual(len(killtest), 2,
                          'kill must return a 2-element list')
         self.assertIsInstance(killtest[0], bool,
                               'kill return element 0 must be a bool')
-        self.assertIsInstance(killtest[1], str,
-                              'kill return element 1 must be a str')
+        self.assertIsInstance(killtest[1], six.string_types,
+                              'kill return element 1 must be a string')
         self.assertFalse(killtest[0],
                          'a bad kill returns False')

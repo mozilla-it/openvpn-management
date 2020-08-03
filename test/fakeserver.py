@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -20,8 +19,8 @@ import textwrap
 class FakeServer(object):
     """ A fake unix socket server """
     # Things I send:
-    initial_connect = ">INFO:OpenVPN Management Interface Version 1 -- type 'help' for more info"
-    unknown_command = "ERROR: unknown command, enter 'help' for more options"
+    initial_connect = b">INFO:OpenVPN Management Interface Version 1 -- type 'help' for more info"
+    unknown_command = b"ERROR: unknown command, enter 'help' for more options"
     status_1 = textwrap.dedent('''\
         OpenVPN CLIENT LIST
         Updated,Tue Sep 25 22:39:46 2018
@@ -83,9 +82,10 @@ class FakeServer(object):
         END
         ''')
 
-    status = {1: status_1, 2: status_2, 3: status_3, 'kiddie': status_kiddie, }
-    good_kill = "SUCCESS: common name 'person1@company.com' found, 1 client(s) killed"
-    bad_kill = "ERROR: common name 'sadf' not found"
+    status = {1: status_1.encode('utf-8'), 2: status_2.encode('utf-8'),
+              3: status_3.encode('utf-8'), 'kiddie': status_kiddie.encode('utf-8'), }
+    good_kill = b"SUCCESS: common name 'person1@company.com' found, 1 client(s) killed"
+    bad_kill = b"ERROR: common name 'sadf' not found"
 
     def __init__(self, socketfile):
         """
