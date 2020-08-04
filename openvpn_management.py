@@ -9,6 +9,7 @@ import select
 import sys
 import os
 import re
+import six
 sys.dont_write_bytecode = True
 
 
@@ -37,11 +38,12 @@ class VPNmgmt(object):
             Connect to the server's socket and clear out the welcome
             banner that has no information of use in it.
         """
+        self.sock.settimeout(10.0)
         self.sock.connect(self.socket_path)
         # openvpn management gives a welcome message on connect.
         # toss it, and go into nonblocking mode.
         self.sock.recv(1024)
-        self.sock.setblocking(0)
+        self.sock.settimeout(0.0)
 
     def disconnect(self):
         """
@@ -51,7 +53,10 @@ class VPNmgmt(object):
             self._send('quit')
         except socket.error:
             pass
-        self.sock.shutdown(socket.SHUT_RDWR)
+        try:
+            self.sock.shutdown(socket.SHUT_RDWR)
+        except (socket.error, OSError):
+            pass
         self.sock.close()
 
     def _send(self, command, stopon=None):
@@ -63,8 +68,10 @@ class VPNmgmt(object):
             a stopping point.  Then, return that (sometimes multiline)
             string to the caller.
         """
-        self.sock.send(command+'\r\n')
-        data = ''
+        if stopon is not None and not isinstance(stopon, six.binary_type):
+            stopon = stopon.encode('utf-8')
+        self.sock.send('{}\r\n'.format(command).encode('utf-8'))
+        data = b''
         while True:
             # keep on reading until hitting timeout, in case the server is
             # being slow.  stopon is used to make this faster: you don't
@@ -76,9 +83,9 @@ class VPNmgmt(object):
                 if filedesc == self.sock:
                     buf = self.sock.recv(1024)
                     data += buf
-            if buf == '' or stopon is not None and data.find(stopon) != -1:
+            if buf == b'' or stopon is not None and data.find(stopon) != -1:
                 break
-        return data
+        return data.decode('utf-8')
 
     @staticmethod
     def _success(input_string):
@@ -86,10 +93,11 @@ class VPNmgmt(object):
             Indicates if the openvpn management server reports a
             success (True) or failure (False) condition after
             we run a command.
+            https://openvpn.net/community-resources/management-interface/
         """
-        if input_string.startswith('SUCCESS'):
-            return True
-        if input_string.startswith('INFO'):
+        if not isinstance(input_string, six.binary_type):
+            input_string = input_string.encode('utf-8')
+        if input_string.startswith(b'SUCCESS'):
             return True
         return False
 
@@ -133,7 +141,7 @@ class VPNmgmt(object):
                 r',(.+),(\d+\.\d+\.\d+\.\d+\:\d+)',
                 data)
         for matchset in matched_lines:
-            # Pass along all the variables in u.
+            # Pass along all the variables in matchset.
             # This makes "field 1" here be "field 1" later.
             users[matchset[0]] = matchset
         return users
@@ -146,12 +154,9 @@ class VPNmgmt(object):
             reports a success or not.
         """
         if commit:
-            ret = self._send('kill '+user, stopon='\r\n')
-            return (self._success(ret), ret)
+            ret = self._send('kill {}'.format(user), stopon='\r\n')
         else:
             # Send something useless, just to make testing
             # behave a bit more like real life.
-            # Small bonus here, if we're disconnected, we will
-            # get back a fail for testing.
             ret = self._send('version')
-            return (self._success(ret), ret)
+        return (self._success(ret), ret)
