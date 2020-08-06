@@ -36,7 +36,7 @@ NAME = 'openvpn_management'
 
 setup(
     name='openvpn-management',
-    version='1.0.0',
+    version='1.3.0',
     author='Greg Cox',
     author_email='gcox@mozilla.com',
     url='https://github.com/mozilla-it/openvpn-management',
