@@ -13,8 +13,11 @@ import unittest
 import socket
 import textwrap
 import test.context  # pylint: disable=unused-import
-import mock
 import six
+if six.PY2:
+    import mock
+elif six.PY3:
+    from unittest import mock
 from openvpn_management import VPNmgmt
 
 
