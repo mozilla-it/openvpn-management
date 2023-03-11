@@ -141,9 +141,24 @@ class VPNmgmt(object):
                 r',(.+),(\d+\.\d+\.\d+\.\d+\:\d+)',
                 data)
         for matchset in matched_lines:
+            username = matchset[0]
+            if username == 'UNDEF':
+                # This is subtle so needs a lot of explaining.
+                #
+                # openvpn source code, src/openvpn/multi.c
+                # multi_print_status calls tls_common_name and if tls_multi is NULL / not fully
+                # established (which can happen due to deferred authentication and races between
+                # auth / negotiations and status delays), the username in ROUTING_TABLE can come
+                # out as 'UNDEF' briefly, usually "one iteration of a status file update."
+                #
+                # Since it's a hard-coded word in the source we're replicating that here and
+                # ignoring any UNDEF user, since it's not really a user.  This DOES mean that if
+                # you have a user with the certificate Common Name of literal string 'UNDEF'
+                # that we're going to suppress that they're connecting, but, you deserve to lose.
+                continue
             # Pass along all the variables in matchset.
             # This makes "field 1" here be "field 1" later.
-            users[matchset[0]] = matchset
+            users[username] = matchset
         return users
 
     def kill(self, user, commit=False):

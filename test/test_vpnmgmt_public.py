@@ -114,6 +114,7 @@ class TestVPNmgmtPublic(unittest.TestCase):
             ROUTING_TABLE,10.48.238.4,person2@company.com,1.2.3.4:49195,Tue Sep 25 22:45:04 2018,1537915504
             ROUTING_TABLE,10.48.238.2,person3@company.com,5.6.7.8:33874,Tue Sep 25 22:45:05 2018,1537915505
             ROUTING_TABLE,10.48.238.3,person1@company.com,9.10.11.12:40743,Tue Sep 25 22:45:04 2018,1537915504
+            ROUTING_TABLE,10.48.238.7,UNDEF,13.14.15.16:8837,Tue Sep 25 22:45:04 2018,1537915504
             GLOBAL_STATS,Max bcast/mcast queue length,0
             END
             ''')
