@@ -9,7 +9,6 @@ import select
 import sys
 import os
 import re
-import six
 sys.dont_write_bytecode = True
 
 
@@ -68,7 +67,7 @@ class VPNmgmt(object):
             a stopping point.  Then, return that (sometimes multiline)
             string to the caller.
         """
-        if stopon is not None and not isinstance(stopon, six.binary_type):
+        if stopon is not None and not isinstance(stopon, bytes):
             stopon = stopon.encode('utf-8')
         self.sock.send('{}\r\n'.format(command).encode('utf-8'))
         data = b''
@@ -95,7 +94,7 @@ class VPNmgmt(object):
             we run a command.
             https://openvpn.net/community-resources/management-interface/
         """
-        if not isinstance(input_string, six.binary_type):
+        if not isinstance(input_string, bytes):
             input_string = input_string.encode('utf-8')
         if input_string.startswith(b'SUCCESS'):
             return True

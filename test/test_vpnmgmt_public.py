@@ -13,11 +13,7 @@ import unittest
 import socket
 import textwrap
 import test.context  # pylint: disable=unused-import
-import six
-if six.PY2:
-    import mock
-elif six.PY3:
-    from unittest import mock
+from unittest import mock
 from openvpn_management import VPNmgmt
 
 
@@ -39,7 +35,7 @@ class TestVPNmgmtPublic(unittest.TestCase):
         """ Verify that the self object was initialized """
         self.assertIsInstance(self.library, VPNmgmt,
                               'VPN client library is not a proper object')
-        self.assertIsInstance(self.library.socket_path, six.string_types,
+        self.assertIsInstance(self.library.socket_path, str,
                               'VPN client socket_path is not a string')
         self.assertIsInstance(self.library.sock, socket.socket,
                               'VPN client sock is not a socket')
@@ -191,7 +187,7 @@ class TestVPNmgmtPublic(unittest.TestCase):
                          'kill must return a 2-element list')
         self.assertIsInstance(killtest[0], bool,
                               'kill return element 0 must be a bool')
-        self.assertIsInstance(killtest[1], six.string_types,
+        self.assertIsInstance(killtest[1], str,
                               'kill return element 1 must be a string')
         self.assertTrue(killtest[0],
                         'a good kill returns True')
@@ -210,7 +206,7 @@ class TestVPNmgmtPublic(unittest.TestCase):
                          'kill must return a 2-element list')
         self.assertIsInstance(killtest[0], bool,
                               'kill return element 0 must be a bool')
-        self.assertIsInstance(killtest[1], six.string_types,
+        self.assertIsInstance(killtest[1], str,
                               'kill return element 1 must be a string')
         self.assertTrue(killtest[0],
                         'a good kill returns True')
@@ -229,7 +225,7 @@ class TestVPNmgmtPublic(unittest.TestCase):
                          'kill must return a 2-element list')
         self.assertIsInstance(killtest[0], bool,
                               'kill return element 0 must be a bool')
-        self.assertIsInstance(killtest[1], six.string_types,
+        self.assertIsInstance(killtest[1], str,
                               'kill return element 1 must be a string')
         self.assertFalse(killtest[0],
                          'a bad kill returns False')

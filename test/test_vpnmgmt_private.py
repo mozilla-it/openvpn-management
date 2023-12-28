@@ -14,8 +14,8 @@ import os
 import socket
 import time
 import threading
+import socketserver
 import test.context  # pylint: disable=unused-import
-from six.moves import socketserver
 from openvpn_management import VPNmgmt
 
 
