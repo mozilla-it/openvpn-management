@@ -17,7 +17,7 @@ from unittest import mock
 from openvpn_management import VPNmgmt
 
 
-UNIX_SOCKET_FILENAME = '/tmp/good-test-path'
+UNIX_SOCKET_FILENAME = '/tmp/good-test-path'  # nosec hardcoded_tmp_directory
 
 
 class TestVPNmgmtPublic(unittest.TestCase):
@@ -53,7 +53,7 @@ class TestVPNmgmtPublic(unittest.TestCase):
             This invokes a non-recorded VPNmgmt client aimed at a
             socket path that isn't there.  This is an expected traceback.
         """
-        testobj = VPNmgmt('/tmp/badpath')
+        testobj = VPNmgmt('/tmp/badpath')  # nosec hardcoded_tmp_directory
         with self.assertRaises(socket.error):
             testobj.connect()
         testobj.sock.close()

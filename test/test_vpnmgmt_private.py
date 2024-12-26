@@ -19,7 +19,7 @@ import test.context  # pylint: disable=unused-import
 from openvpn_management import VPNmgmt
 
 
-UNIX_SOCKET_FILENAME = '/tmp/good-test-path'
+UNIX_SOCKET_FILENAME = '/tmp/good-test-path'  # nosec hardcoded_tmp_directory
 INITIAL_CONNECT = b">INFO:OpenVPN Management Interface Version 1 -- type 'help' for more info"
 
 
