@@ -69,7 +69,7 @@ class VPNmgmt(object):
         """
         if stopon is not None and not isinstance(stopon, bytes):
             stopon = stopon.encode('utf-8')
-        self.sock.send('{}\r\n'.format(command).encode('utf-8'))
+        self.sock.send(f'{command}\r\n'.encode('utf-8'))
         data = b''
         while True:
             # keep on reading until hitting timeout, in case the server is
@@ -168,7 +168,7 @@ class VPNmgmt(object):
             reports a success or not.
         """
         if commit:
-            ret = self._send('kill {}'.format(user), stopon='\r\n')
+            ret = self._send(f'kill {user}', stopon='\r\n')
         else:
             # Send something useless, just to make testing
             # behave a bit more like real life.
